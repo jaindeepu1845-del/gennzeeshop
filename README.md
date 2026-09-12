@@ -36,3 +36,13 @@ This project is intentionally a conventional Flask app so it can be moved to a s
 - Add admin authentication and catalog management.
 - Add a proper webhook handler and idempotency checks.
 - Decide how website orders should synchronize with the Telegram bot before both systems sell from the same inventory.
+
+
+## Turso / Render
+
+For Render production, set these environment variables:
+- `TURSO_DATABASE_URL=libsql://gennzee-shop-upload-gennzee.aws-ap-south-1.turso.io`
+- `TURSO_AUTH_TOKEN` = a private database auth token for `gennzee-shop-upload`
+- `SECRET_KEY` = a long random secret
+
+The app uses Turso when both Turso variables are present; otherwise it falls back to local SQLite for local development.

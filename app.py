@@ -1,10 +1,13 @@
 import os, sqlite3, secrets, hmac, hashlib
+import libsql
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.getenv("DB_PATH", os.path.join(BASE_DIR, "shop.db"))
+TURSO_DATABASE_URL = os.getenv("TURSO_DATABASE_URL", "").strip()
+TURSO_AUTH_TOKEN = os.getenv("TURSO_AUTH_TOKEN", "").strip()
 SECRET_KEY = os.getenv("SECRET_KEY", secrets.token_hex(32))
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
@@ -17,9 +20,17 @@ app.secret_key = SECRET_KEY
 BLOCKED_NAME_PARTS = ("cracked",)
 
 def db():
-    conn = sqlite3.connect(DB_PATH)
+    # Production/Render: connect directly to Turso over HTTPS.
+    if TURSO_DATABASE_URL and TURSO_AUTH_TOKEN:
+        conn = libsql.connect(database=TURSO_DATABASE_URL, auth_token=TURSO_AUTH_TOKEN)
+    else:
+        # Local development fallback.
+        conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA foreign_keys=ON")
+    try:
+        conn.execute("PRAGMA foreign_keys=ON")
+    except Exception:
+        pass
     return conn
 
 def allowed_product(row):

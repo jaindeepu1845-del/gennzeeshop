@@ -1,3 +1,4 @@
 Flask>=3.0,<4
 Werkzeug>=3.0,<4
 razorpay>=1.4,<2
+libsql==0.1.11
