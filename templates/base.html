@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Gennzee Shop{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+</head><body>
+<nav class="nav"><a class="brand" href="{{ url_for('home') }}"><span>G</span> Gennzee Shop</a>
+<div class="navlinks">
+<a href="{{ url_for('home') }}">Shop</a>
+{% if user %}<a href="{{ url_for('account') }}">My Account</a><a href="{{ url_for('logout') }}">Logout</a>
+{% else %}<a href="{{ url_for('login') }}">Login</a><a class="pill" href="{{ url_for('register') }}">Create account</a>{% endif %}
+</div></nav>
+{% with messages=get_flashed_messages() %}{% if messages %}<div class="alerts">{% for m in messages %}<div>{{m}}</div>{% endfor %}</div>{% endif %}{% endwith %}
+<main>{% block content %}{% endblock %}</main>
+<footer>Gennzee Shop · Digital products · Secure checkout</footer>
+</body></html>

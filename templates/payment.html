@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block content %}
+<div class="auth"><div class="eyebrow">CHECKOUT</div><h1>Pay ₹{{"%.2f"|format(amount)}}</h1>
+{% if razorpay_ready %}<p>Continue with Razorpay secure checkout.</p><button class="cta full" id="pay">Pay now</button>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+fetch("{{url_for('razorpay_order')}}",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_id:{{order_id}}})})
+.then(r=>r.json()).then(o=>{
+ if(o.error){alert(o.error);return}
+ const r=new Razorpay({key:"{{key_id}}",amount:o.amount,currency:o.currency,name:"Gennzee Shop",
+ order_id:o.id,handler:function(x){
+ fetch("{{url_for('razorpay_verify')}}",{method:"POST",headers:{"Content-Type":"application/json"},
+ body:JSON.stringify({...x,order_id:{{order_id}}})}).then(r=>r.json()).then(v=>{
+ if(v.redirect) location.href=v.redirect; else alert(v.error||"Verification failed");
+ })}});
+ document.getElementById("pay").onclick=()=>r.open();
+}).catch(()=>alert("Could not start payment."));
+</script>
+{% else %}<p class="notice">Razorpay is not configured yet. Add <code>RAZORPAY_KEY_ID</code> and <code>RAZORPAY_KEY_SECRET</code> to the server environment before enabling checkout.</p>{% endif %}
+</div>{% endblock %}

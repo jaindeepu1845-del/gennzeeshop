@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block content %}
+<section class="account"><div class="eyebrow">ACCOUNT</div><h1>Hi, {{user.name}}.</h1><div class="balance">Wallet balance <strong>₹{{"%.2f"|format(user.wallet_balance)}}</strong></div>
+<h2>Your orders</h2>{% if orders %}<div class="orders">{% for o in orders %}<a href="{{url_for('order',order_id=o.id)}}"><span>#{{o.id}} · {{o.name}}</span><span>₹{{"%.2f"|format(o.total_amount)}} · {{o.status}}</span></a>{% endfor %}</div>{% else %}<p class="muted">No website orders yet.</p>{% endif %}</section>
+{% endblock %}

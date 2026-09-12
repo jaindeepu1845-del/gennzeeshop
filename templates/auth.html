@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}{{mode|title}} · Gennzee Shop{% endblock %}{% block content %}
+<div class="auth"><div class="eyebrow">GENNZEE SHOP</div><h1>{{"Create your account" if mode=="register" else "Welcome back"}}</h1>
+<form method="post">
+{% if mode=="register" %}<label>Name<input name="name" required></label>{% endif %}
+<label>Email<input name="email" type="email" required></label><label>Password<input name="password" type="password" minlength="8" required></label>
+<button class="cta full">{{"Create account" if mode=="register" else "Login"}}</button></form>
+<p class="muted">{% if mode=="register" %}Already registered? <a href="{{url_for('login')}}">Login</a>{% else %}New here? <a href="{{url_for('register')}}">Create an account</a>{% endif %}</p></div>
+{% endblock %}

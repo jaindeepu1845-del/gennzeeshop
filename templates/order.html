@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block content %}
+<section class="account"><div class="eyebrow">ORDER #{{order.id}}</div><h1>{{order.name}}</h1><div class="balance">Status <strong>{{order.status}}</strong></div>
+<p>Total: ₹{{"%.2f"|format(order.total_amount)}} · Quantity: {{order.quantity}}</p>
+{% if items %}<h2>Delivered codes</h2><div class="codes">{% for i in items %}<code>{{i.code}}</code>{% endfor %}</div>{% endif %}
+<a class="cta" href="{{url_for('home')}}">Back to shop</a></section>
+{% endblock %}
