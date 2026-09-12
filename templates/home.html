@@ -1,19 +1,75 @@
 {% extends "base.html" %}{% block content %}
-<section class="hero"><div><div class="eyebrow">GENNZEE SHOP</div><h1>Digital deals.<br><em>Simple checkout.</em></h1>
-<p>Browse the live product catalog and create your Gennzee customer account.</p>
-<a class="cta" href="#products">Explore products ↓</a></div>
-<div class="orb"><div class="orbtext">LIVE<br><b>SHOP</b></div></div></section>
-<section id="products"><div class="sectionhead"><div><div class="eyebrow">CATALOG</div><h2>Available now</h2></div><span>{{ products|length }} products</span></div>
-<div class="grid">
-{% for p in products %}
-<article class="card"><div class="cardtop"><span class="tag">IN STOCK</span><span>₹{{ "%.0f"|format(p.price) }}</span></div>
-<h3>{{p.name}}</h3><p>{{ (p.description or "Digital product. Please review the product terms before purchase.")[:150] }}{% if (p.description or '')|length>150 %}…{% endif %}</p>
-<div class="stock">● {{p.stock}} available</div>
-{% if user %}
-<form method="post" action="{{ url_for('buy',product_id=p.id) }}" class="buy"><select name="quantity">{% for n in range(1,min(5,p.stock)+1) %}<option value="{{n}}">{{n}} × ₹{{"%.0f"|format(p.price)}}</option>{% endfor %}</select><button {% if p.stock<1 %}disabled{% endif %}>Buy</button></form>
-{% else %}<a class="buybtn" href="{{url_for('login')}}">Login to buy</a>{% endif %}
-</article>
-{% endfor %}
-</div></section>
-<section class="features"><div><b>01</b><h3>Account</h3><p>Customer login with hashed passwords.</p></div><div><b>02</b><h3>Live stock</h3><p>Catalog and stock counts come from SQLite.</p></div><div><b>03</b><h3>Payments</h3><p>Razorpay-ready checkout with signature verification.</p></div></section>
+<section class="hero">
+  <div>
+    <div class="eyebrow">GENNZEE SHOP</div>
+    <h1>Digital deals.<br><em>Simple checkout.</em></h1>
+    <p>Browse the live product catalog and create your Gennzee customer account.</p>
+    <a class="cta" href="#products">Explore products ↓</a>
+  </div>
+  <div class="orb">
+    <div class="orbtext">LIVE<br><b>SHOP</b></div>
+  </div>
+</section>
+
+<section id="products">
+  <div class="sectionhead">
+    <div>
+      <div class="eyebrow">CATALOG</div>
+      <h2>Available now</h2>
+    </div>
+    <span>{{ products|length }} products</span>
+  </div>
+
+  <div class="grid">
+    {% for p in products %}
+    <article class="card">
+      <div class="cardtop">
+        <span class="tag">IN STOCK</span>
+        <span>₹{{ "%.0f"|format(p.price) }}</span>
+      </div>
+
+      <h3>{{ p.name }}</h3>
+
+      <p>
+        {{ (p.description or "Digital product. Please review the product terms before purchase.")[:150] }}{% if (p.description or '')|length > 150 %}…{% endif %}
+      </p>
+
+      <div class="stock">● {{ p.stock }} available</div>
+
+      {% if user %}
+      <form method="post" action="{{ url_for('buy', product_id=p.id) }}" class="buy">
+        <select name="quantity">
+          {% for n in range(1, (5 if p.stock > 5 else p.stock) + 1) %}
+          <option value="{{ n }}">{{ n }} × ₹{{ "%.0f"|format(p.price) }}</option>
+          {% endfor %}
+        </select>
+        <button {% if p.stock < 1 %}disabled{% endif %}>Buy</button>
+      </form>
+      {% else %}
+      <a class="buybtn" href="{{ url_for('login') }}">Login to buy</a>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="features">
+  <div>
+    <b>01</b>
+    <h3>Account</h3>
+    <p>Customer login with hashed passwords.</p>
+  </div>
+
+  <div>
+    <b>02</b>
+    <h3>Live stock</h3>
+    <p>Catalog and stock counts come from SQLite.</p>
+  </div>
+
+  <div>
+    <b>03</b>
+    <h3>Payments</h3>
+    <p>Razorpay-ready checkout with signature verification.</p>
+  </div>
+</section>
 {% endblock %}
